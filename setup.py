@@ -12,10 +12,10 @@ setup(
   author = 'Marco Montagna',
   author_email = 'marcojoemontagna@gmail.com',
   url = 'https://github.com/mmontagna/googleplay-api',
-  download_url = '',
-  keywords = [],
+  download_url = 'https://github.com/mmontagna/googleplay-api/archive/v0.0.1.tar.gz',
+  keywords = ['googleplay', 'apk', 'android', 'download'],
   classifiers = [],
-  install_requires = [],
+  install_requires = ['requests','protobuf'],
   entry_points = {
       'console_scripts': ['googleplay-download=googleplay.download:main']
   }
