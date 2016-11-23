@@ -5,6 +5,7 @@ import gzip
 import pprint
 import StringIO
 import requests
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 from google.protobuf import descriptor
 from google.protobuf.internal.containers import RepeatedCompositeFieldContainer
@@ -13,6 +14,10 @@ from google.protobuf.message import Message, DecodeError
 
 import googleplay_pb2
 import config
+
+
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
 
 class LoginError(Exception):
     def __init__(self, value):
