@@ -1,41 +1,34 @@
 #!/usr/bin/python
 
 # Do not remove
-GOOGLE_LOGIN = GOOGLE_PASSWORD = AUTH_TOKEN = None
 
 import sys
-from pprint import pprint
 
 from config import *
 from googleplay import GooglePlayAPI
-from helpers import sizeof_fmt
 
-if (len(sys.argv) < 2):
-    print "Usage: %s packagename [filename]"
-    print "Download an app."
-    print "If filename is not present, will write to packagename.apk."
-    sys.exit(0)
+def download_sdk_to_file(packagename, filename):
+  # Connect
+  api = GooglePlayAPI(ANDROID_ID)
+  api.login(GOOGLE_LOGIN, GOOGLE_PASSWORD, AUTH_TOKEN)
 
-packagename = sys.argv[1]
+  # Download
+  data = api.download(packagename)
+  with open(filename, "wb") as f:
+    f.write(data)
 
-if (len(sys.argv) == 3):
-    filename = sys.argv[2]
-else:
-    filename = packagename + ".apk"
+if __name__ == '__main__':
+  if (len(sys.argv) < 2):
+      print "Usage: %s packagename [filename]"
+      print "Download an app."
+      print "If filename is not present, will write to packagename.apk."
+      sys.exit(1)
 
-# Connect
-api = GooglePlayAPI(ANDROID_ID)
-api.login(GOOGLE_LOGIN, GOOGLE_PASSWORD, AUTH_TOKEN)
+  packagename = sys.argv[1]
 
-# Get the version code and the offer type from the app details
-m = api.details(packagename)
-doc = m.docV2
-vc = doc.details.appDetails.versionCode
-ot = doc.offer[0].offerType
-
-# Download
-print "Downloading %s..." % sizeof_fmt(doc.details.appDetails.installationSize),
-data = api.download(packagename, vc, ot)
-open(filename, "wb").write(data)
-print "Done"
-
+  if (len(sys.argv) == 3):
+      filename = sys.argv[2]
+  else:
+      filename = packagename + ".apk"
+  download_sdk_to_file(packagename, filename)
+  print "Done"

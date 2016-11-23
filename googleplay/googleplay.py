@@ -11,6 +11,7 @@ from google.protobuf import descriptor
 from google.protobuf.internal.containers import RepeatedCompositeFieldContainer
 from google.protobuf import text_format
 from google.protobuf.message import Message, DecodeError
+from helpers import sizeof_fmt
 
 import googleplay_pb2
 import config
@@ -257,13 +258,19 @@ class GooglePlayAPI(object):
         message = self.executeRequestApi2(path)
         return message.payload.reviewResponse
     
-    def download(self, packageName, versionCode, offerType=1):
+    def download(self, packageName):
         """Download an app and return its raw data (APK file).
 
         packageName is the app unique ID (usually starting with 'com.').
 
         versionCode can be grabbed by using the details() method on the given
         app."""
+
+        # Get the version code and the offer type from the app details
+        doc = self.details(packageName).docV2
+        versionCode = doc.details.appDetails.versionCode
+        offerType = doc.offer[0].offerType
+
         path = "purchase"
         data = "ot=%d&doc=%s&vc=%d" % (offerType, packageName, versionCode)
         message = self.executeRequestApi2(path, data)
@@ -279,6 +286,8 @@ class GooglePlayAPI(object):
                    "User-Agent" : "AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)",
                    "Accept-Encoding": "",
                   }
+        
+        print "Downloading %s..." % sizeof_fmt(doc.details.appDetails.installationSize),
 
         response = requests.get(url, headers=headers, cookies=cookies, verify=False)
         return response.content
