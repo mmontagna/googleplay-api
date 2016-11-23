@@ -17,7 +17,7 @@ def download_sdk_to_file(packagename, filename):
   with open(filename, "wb") as f:
     f.write(data)
 
-if __name__ == '__main__':
+def main():
   if (len(sys.argv) < 2):
       print "Usage: %s packagename [filename]"
       print "Download an app."
@@ -32,3 +32,6 @@ if __name__ == '__main__':
       filename = packagename + ".apk"
   download_sdk_to_file(packagename, filename)
   print "Done"
+
+if __name__ == '__main__':
+  main()
